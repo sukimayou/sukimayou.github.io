@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>sukimayou - </title>
+        <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <a class="navbar-brand" href="/index.html">
+                <span class="d-block d-lg-block">sukimayou</span>
+            </a>
+        </nav>
+        <!-- Page Content-->
+        <div class="container-fluid p-0">
+            <section class="blog-section" id="awards">
+                <div class="blog-section-content">
+                    <p>here’s some Python code I wrote a while back (nowhere near efficient or perfect) to get the junctions from NTFSLinksView (as in, you export your symlinks from there and then I wrote a script to mass convert them into commands)</p>
+
+<pre class="wp-block-code"><code># Junction Parser
+# This program parses the text output of symbolic links in NTFSLinksView and makes an array of junctions
+# It optionally runs mklink /J to set the links if you want
+
+from __future__ import print_function
+import os
+
+junctionsdumppath = "" # INPUT PATH GOES HERE
+f = open(junctionsdumppath, "r")
+
+#=
+#Name
+#Full Path
+#Type
+#Target Path
+#Created Time
+#=
+# 7 lines, we need to check 3rd, 4th, and 5th
+
+# then skip a line, then check if the equals thing is there, else stop reading
+# for each 3rd 4th 5th line if 4th is 'Junction' then .append([3rd,5th])
+
+# then mklink function can be looped which would run command 'mklink /J "' + a[0] + '" "' + a[1] + '"' i think
+
+def chunkparser(astr):
+    try:
+        parsed = []
+        thelist = astr.split("\n")
+        if thelist[3] == "Type              : Junction":
+            parsed.append(thelist[2][thelist[2].find(":")+2:])
+            parsed.append(thelist[4][thelist[4].find(":")+2:])
+            return parsed
+        else:
+            return "don't add"
+    except Exception:
+        return "error"
+
+def mklink(element):
+    return 'mklink /J "' + element[0] + '" "' + element[1] + '"'
+
+# default will say "Junction created for _____ &lt;&lt;===&gt;&gt; _____"
+
+junctionstr = [item.replace("\x00", "").replace("\n", "") for item in f.readlines() if item.replace("\x00", "") != "\n"]
+
+junctionchunk = []
+i = 0
+while len(junctionstr) - i &gt;= 7:
+    tempstr = ""
+    for j in range(i, i+7):
+        tempstr += junctionstr[j] + "\n"
+    junctionchunk.append(tempstr)
+    i += 7
+
+# print(junctionchunk[10]) # for testing
+
+junctionlist = [chunkparser(item) for item in junctionchunk if chunkparser(item) != "don't add"]
+print(junctionlist)
+
+# to export mklink commands to a text file, uncomment this
+#'''
+mklinkpath = "" # PUT OUTPUT PATH HERE
+a = open(mklinkpath, "w")
+for junction in junctionlist:
+    a.write(mklink(junction) + "\n")
+a.close()
+#'''
+
+# mklink code, uncomment to run
+# for thing in junctionlist:
+#     os.system(mklink(thing))
+
+f.close()</code></pre>
+
+                </div>
+            </section>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>

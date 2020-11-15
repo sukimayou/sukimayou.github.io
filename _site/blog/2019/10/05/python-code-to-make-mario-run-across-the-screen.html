@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>sukimayou - </title>
+        <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <a class="navbar-brand" href="/index.html">
+                <span class="d-block d-lg-block">sukimayou</span>
+            </a>
+        </nav>
+        <!-- Page Content-->
+        <div class="container-fluid p-0">
+            <section class="blog-section" id="awards">
+                <div class="blog-section-content">
+                    <p>I’m fairly certain this is based off of someone else’s code, so I’m relieving it to the public domain (or whatever the rights of the original template is). I do not own Mario nor am I affiliated with Nintendo, so since that’s out of the way here’s the GIF used:<figure class="wp-block-image"></figure></p>
+
+<p><img src="/wp-content/uploads/2019/10/oof.gif" alt="" class="wp-image-41" /></p>
+
+<pre class="wp-block-code"><code>import wx
+from wx.adv import Animation
+from win32api import GetSystemMetrics
+
+end = GetSystemMetrics(0)
+offset = int(GetSystemMetrics(1)*0.75)
+speed = 30
+
+mariogif = "mario.gif"
+
+class ShapedFrame(wx.Frame):
+    def __init__(self):
+        self.x = -100
+        self.y = offset
+        wx.Frame.__init__(self, None, -1, "Shaped Window", pos=wx.Point(self.x, self.y),
+                style = wx.FRAME_SHAPED | wx.SIMPLE_BORDER)
+        self.hasShape = False
+        self.delta = wx.Point(0,0)
+
+        # Load the image
+        self.timer = wx.Timer(self)
+        anim = Animation(mariogif)
+        self.frames = anim.GetFrameCount()
+        self.i = 0
+        self.timer.Start(milliseconds = 100, oneShot = False)
+        self.Bind(wx.EVT_TIMER, self.OnTimer)
+        
+        
+    def OnTimer(self, evt=None):
+        anim = Animation(mariogif)
+          
+        image = anim.GetFrame(self.i)
+        self.i += 1
+        if self.i &gt;= self.frames:
+            self.i = 0
+        image.SetMaskColour(255,255,255)
+        image.SetMask(True)            
+        self.bmp = wx.Bitmap(image)
+
+        self.SetClientSize((self.bmp.GetWidth(), self.bmp.GetHeight()))
+        dc = wx.ClientDC(self)
+        dc.DrawBitmap(self.bmp, 0,0, True)
+        self.SetWindowShape()
+        self.x += speed
+        if self.x &gt; end:
+            self.x = -100
+        self.Move(self.x, self.y)
+
+        #self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
+        #self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        #self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        #self.Bind(wx.EVT_MOTION, self.OnMouseMove)
+        self.Bind(wx.EVT_RIGHT_UP, self.OnExit)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_WINDOW_CREATE, self.SetWindowShape)
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        
+    
+    def OnEraseBackground(self,evt=None):
+        pass        
+    def SetWindowShape(self, evt=None):
+        r = wx.Region(self.bmp)
+        self.hasShape = self.SetShape(r)
+
+    def OnDoubleClick(self, evt):
+        if self.hasShape:
+            self.SetShape(wx.Region())
+            self.hasShape = False
+        else:
+            self.SetWindowShape()
+
+    def OnPaint(self, evt):
+        dc = wx.PaintDC(self)
+        dc.DrawBitmap(self.bmp, 0,0, True)
+
+    def OnExit(self, evt):
+        self.Close()
+
+    def OnLeftDown(self, evt):
+        self.CaptureMouse()
+        pos = self.ClientToScreen(evt.GetPosition())
+        origin = self.GetPosition()
+        self.delta = wx.Point(pos.x - origin.x, pos.y - origin.y)
+
+    def OnMouseMove(self, evt):
+        if evt.Dragging() and evt.LeftIsDown():
+            pos = self.ClientToScreen(evt.GetPosition())
+            newPos = (pos.x - self.delta.x, pos.y - self.delta.y)
+            self.Move(newPos)
+
+    def OnLeftUp(self, evt):
+        if self.HasCapture():
+            self.ReleaseMouse()
+            
+if __name__ == '__main__':
+    app = wx.App()
+    ShapedFrame().Show()
+    app.MainLoop()  </code></pre>
+
+                </div>
+            </section>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>

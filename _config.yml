@@ -1,0 +1,6 @@
+url: https://sukimayou.github.io
+title: sukimayou
+description: just documenting stuff
+permalink: /blog/:year/:month/:day/:title
+github_username: sukimayou
+repository: sukimayou/sukimayou.github.io

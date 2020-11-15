@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-14T23:59:05-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sukimayou</title><subtitle>just documenting stuff</subtitle><entry><title type="html">Anime credit card scam in Python + Qt</title><link href="http://localhost:4000/blog/2019/10/05/anime-credit-card-scam-in-python-qt" rel="alternate" type="text/html" title="Anime credit card scam in Python + Qt" /><published>2019-10-05T13:14:20-04:00</published><updated>2019-10-05T13:14:20-04:00</updated><id>http://localhost:4000/blog/2019/10/05/anime-credit-card-scam-in-python-qt</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/anime-credit-card-scam-in-python-qt">&lt;p&gt;You’ve seen it before. Probably. It’s “Totally Not Malware,” it’s a silly meme that asks for your credit card information. Well, I decided to make it a reality in 2017. It’s not implemented securely at all, but hey, it works.&lt;/p&gt;
+
+&lt;div class=&quot;wp-block-image&quot;&gt;
+  &lt;figure class=&quot;aligncenter&quot;&gt;&lt;img src=&quot;https://i.kym-cdn.com/photos/images/original/001/154/083/6f7.gif&quot; alt=&quot;Image result for h hi there credit&quot; /&gt;&lt;figcaption&gt;The original&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;wp-block-image&quot;&gt;
+  &lt;figure class=&quot;aligncenter&quot;&gt;&lt;img src=&quot;/wp-content/uploads/2019/10/image.png&quot; alt=&quot;&quot; class=&quot;wp-image-51&quot; srcset=&quot;/wp-content/uploads/2019/10/image.png 632w, /wp-content/uploads/2019/10/image-320x146.png 320w&quot; sizes=&quot;(max-width: 632px) 100vw, 632px&quot; /&gt;&lt;figcaption&gt;My version&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here’s the source code, feel free to do whatever (as long as it’s not actually scamming people!): &lt;a href=&quot;http://localhost:4000/wp-content/uploads/2019/10/creditcard.7z&quot;&gt;http://localhost:4000/wp-content/uploads/2019/10/creditcard.7z&lt;/a&gt;&lt;/p&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">You’ve seen it before. Probably. It’s “Totally Not Malware,” it’s a silly meme that asks for your credit card information. Well, I decided to make it a reality in 2017. It’s not implemented securely at all, but hey, it works.</summary></entry><entry><title type="html">Python code to make Mario run across the screen</title><link href="http://localhost:4000/blog/2019/10/05/python-code-to-make-mario-run-across-the-screen" rel="alternate" type="text/html" title="Python code to make Mario run across the screen" /><published>2019-10-05T12:28:59-04:00</published><updated>2019-10-05T12:28:59-04:00</updated><id>http://localhost:4000/blog/2019/10/05/python-code-to-make-mario-run-across-the-screen</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/python-code-to-make-mario-run-across-the-screen">&lt;p&gt;I’m fairly certain this is based off of someone else’s code, so I’m relieving it to the public domain (or whatever the rights of the original template is). I do not own Mario nor am I affiliated with Nintendo, so since that’s out of the way here’s the GIF used:&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;/figure&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/wp-content/uploads/2019/10/oof.gif&quot; alt=&quot;&quot; class=&quot;wp-image-41&quot; /&gt;&lt;/p&gt;
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;import wx
+from wx.adv import Animation
+from win32api import GetSystemMetrics
+
+end = GetSystemMetrics(0)
+offset = int(GetSystemMetrics(1)*0.75)
+speed = 30
+
+mariogif = &quot;mario.gif&quot;
+
+class ShapedFrame(wx.Frame):
+    def __init__(self):
+        self.x = -100
+        self.y = offset
+        wx.Frame.__init__(self, None, -1, &quot;Shaped Window&quot;, pos=wx.Point(self.x, self.y),
+                style = wx.FRAME_SHAPED | wx.SIMPLE_BORDER)
+        self.hasShape = False
+        self.delta = wx.Point(0,0)
+
+        # Load the image
+        self.timer = wx.Timer(self)
+        anim = Animation(mariogif)
+        self.frames = anim.GetFrameCount()
+        self.i = 0
+        self.timer.Start(milliseconds = 100, oneShot = False)
+        self.Bind(wx.EVT_TIMER, self.OnTimer)
+        
+        
+    def OnTimer(self, evt=None):
+        anim = Animation(mariogif)
+          
+        image = anim.GetFrame(self.i)
+        self.i += 1
+        if self.i &amp;gt;= self.frames:
+            self.i = 0
+        image.SetMaskColour(255,255,255)
+        image.SetMask(True)            
+        self.bmp = wx.Bitmap(image)
+
+        self.SetClientSize((self.bmp.GetWidth(), self.bmp.GetHeight()))
+        dc = wx.ClientDC(self)
+        dc.DrawBitmap(self.bmp, 0,0, True)
+        self.SetWindowShape()
+        self.x += speed
+        if self.x &amp;gt; end:
+            self.x = -100
+        self.Move(self.x, self.y)
+
+        #self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
+        #self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        #self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        #self.Bind(wx.EVT_MOTION, self.OnMouseMove)
+        self.Bind(wx.EVT_RIGHT_UP, self.OnExit)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_WINDOW_CREATE, self.SetWindowShape)
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        
+    
+    def OnEraseBackground(self,evt=None):
+        pass        
+    def SetWindowShape(self, evt=None):
+        r = wx.Region(self.bmp)
+        self.hasShape = self.SetShape(r)
+
+    def OnDoubleClick(self, evt):
+        if self.hasShape:
+            self.SetShape(wx.Region())
+            self.hasShape = False
+        else:
+            self.SetWindowShape()
+
+    def OnPaint(self, evt):
+        dc = wx.PaintDC(self)
+        dc.DrawBitmap(self.bmp, 0,0, True)
+
+    def OnExit(self, evt):
+        self.Close()
+
+    def OnLeftDown(self, evt):
+        self.CaptureMouse()
+        pos = self.ClientToScreen(evt.GetPosition())
+        origin = self.GetPosition()
+        self.delta = wx.Point(pos.x - origin.x, pos.y - origin.y)
+
+    def OnMouseMove(self, evt):
+        if evt.Dragging() and evt.LeftIsDown():
+            pos = self.ClientToScreen(evt.GetPosition())
+            newPos = (pos.x - self.delta.x, pos.y - self.delta.y)
+            self.Move(newPos)
+
+    def OnLeftUp(self, evt):
+        if self.HasCapture():
+            self.ReleaseMouse()
+            
+if __name__ == '__main__':
+    app = wx.App()
+    ShapedFrame().Show()
+    app.MainLoop()  &lt;/code&gt;&lt;/pre&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">I’m fairly certain this is based off of someone else’s code, so I’m relieving it to the public domain (or whatever the rights of the original template is). I do not own Mario nor am I affiliated with Nintendo, so since that’s out of the way here’s the GIF used:</summary></entry><entry><title type="html">how to play boot screen video at login on Windows</title><link href="http://localhost:4000/blog/2019/10/05/how-to-play-boot-screen-video-at-login-on-windows" rel="alternate" type="text/html" title="how to play boot screen video at login on Windows" /><published>2019-10-05T11:39:57-04:00</published><updated>2019-10-05T11:39:57-04:00</updated><id>http://localhost:4000/blog/2019/10/05/how-to-play-boot-screen-video-at-login-on-windows</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/how-to-play-boot-screen-video-at-login-on-windows">&lt;p&gt;i used this to play the PS1 boot screen at startup every time, is pretty cool&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;make a .bat file&lt;/li&gt;
+  &lt;li&gt;depending on video player put this in .bat file:
+    &lt;ul&gt;
+      &lt;li&gt;for VLC: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;C:\Program Files (x86)\VideoLAN\VLC\vlc.exe&quot; &amp;lt;filename&amp;gt; -f --play-and-exit --no-one-instance --mouse-hide-timeout=1 --video-on-top --no-video-title-show&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;for MPC-HC: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;C:\Program Files (x86)\MPC-HC\mpc-hc.exe&quot; &amp;lt;filename&amp;gt; /play /close /fullscreen /new&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;create a shortcut for the .bat file and put it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;it should work and to skip it click as soon as it pops up, then ESC, ALT+F4&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">i used this to play the PS1 boot screen at startup every time, is pretty cool</summary></entry><entry><title type="html">split MIDI files into separate MP3s</title><link href="http://localhost:4000/blog/2019/10/05/split-midi-files-into-separate-mp3s" rel="alternate" type="text/html" title="split MIDI files into separate MP3s" /><published>2019-10-05T11:23:58-04:00</published><updated>2019-10-05T11:23:58-04:00</updated><id>http://localhost:4000/blog/2019/10/05/split-midi-files-into-separate-mp3s</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/split-midi-files-into-separate-mp3s">&lt;p&gt;just a quick guide:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;use MIDI Splitter Lite (&lt;a href=&quot;https://github.com/VirtuosicAI/MIDI-Splitter-Lite&quot;&gt;https://github.com/VirtuosicAI/MIDI-Splitter-Lite&lt;/a&gt;) to split MIDI into tracks (you probably will need to check “Copy first track to output tracks”&lt;/li&gt;
+  &lt;li&gt;then go in Keppy’s MIDI Converter and load your soundfont it, drag all MIDIs in and export in whatever format you want (you might want to lower volume)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;that should be it&lt;/p&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">just a quick guide:</summary></entry><entry><title type="html">junction maker (get list of symlinks and commands in Windows)</title><link href="http://localhost:4000/blog/2019/10/05/junction-maker-get-list-of-symlinks-and-commands-in-windows" rel="alternate" type="text/html" title="junction maker (get list of symlinks and commands in Windows)" /><published>2019-10-05T10:52:15-04:00</published><updated>2019-10-05T10:52:15-04:00</updated><id>http://localhost:4000/blog/2019/10/05/junction-maker-get-list-of-symlinks-and-commands-in-windows</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/junction-maker-get-list-of-symlinks-and-commands-in-windows">&lt;p&gt;here’s some Python code I wrote a while back (nowhere near efficient or perfect) to get the junctions from NTFSLinksView (as in, you export your symlinks from there and then I wrote a script to mass convert them into commands)&lt;/p&gt;
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;# Junction Parser
+# This program parses the text output of symbolic links in NTFSLinksView and makes an array of junctions
+# It optionally runs mklink /J to set the links if you want
+
+from __future__ import print_function
+import os
+
+junctionsdumppath = &quot;&quot; # INPUT PATH GOES HERE
+f = open(junctionsdumppath, &quot;r&quot;)
+
+#=
+#Name
+#Full Path
+#Type
+#Target Path
+#Created Time
+#=
+# 7 lines, we need to check 3rd, 4th, and 5th
+
+# then skip a line, then check if the equals thing is there, else stop reading
+# for each 3rd 4th 5th line if 4th is 'Junction' then .append([3rd,5th])
+
+# then mklink function can be looped which would run command 'mklink /J &quot;' + a[0] + '&quot; &quot;' + a[1] + '&quot;' i think
+
+def chunkparser(astr):
+    try:
+        parsed = []
+        thelist = astr.split(&quot;\n&quot;)
+        if thelist[3] == &quot;Type              : Junction&quot;:
+            parsed.append(thelist[2][thelist[2].find(&quot;:&quot;)+2:])
+            parsed.append(thelist[4][thelist[4].find(&quot;:&quot;)+2:])
+            return parsed
+        else:
+            return &quot;don't add&quot;
+    except Exception:
+        return &quot;error&quot;
+
+def mklink(element):
+    return 'mklink /J &quot;' + element[0] + '&quot; &quot;' + element[1] + '&quot;'
+
+# default will say &quot;Junction created for _____ &amp;lt;&amp;lt;===&amp;gt;&amp;gt; _____&quot;
+
+junctionstr = [item.replace(&quot;\x00&quot;, &quot;&quot;).replace(&quot;\n&quot;, &quot;&quot;) for item in f.readlines() if item.replace(&quot;\x00&quot;, &quot;&quot;) != &quot;\n&quot;]
+
+junctionchunk = []
+i = 0
+while len(junctionstr) - i &amp;gt;= 7:
+    tempstr = &quot;&quot;
+    for j in range(i, i+7):
+        tempstr += junctionstr[j] + &quot;\n&quot;
+    junctionchunk.append(tempstr)
+    i += 7
+
+# print(junctionchunk[10]) # for testing
+
+junctionlist = [chunkparser(item) for item in junctionchunk if chunkparser(item) != &quot;don't add&quot;]
+print(junctionlist)
+
+# to export mklink commands to a text file, uncomment this
+#'''
+mklinkpath = &quot;&quot; # PUT OUTPUT PATH HERE
+a = open(mklinkpath, &quot;w&quot;)
+for junction in junctionlist:
+    a.write(mklink(junction) + &quot;\n&quot;)
+a.close()
+#'''
+
+# mklink code, uncomment to run
+# for thing in junctionlist:
+#     os.system(mklink(thing))
+
+f.close()&lt;/code&gt;&lt;/pre&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">here’s some Python code I wrote a while back (nowhere near efficient or perfect) to get the junctions from NTFSLinksView (as in, you export your symlinks from there and then I wrote a script to mass convert them into commands)</summary></entry><entry><title type="html">attract mode with bat files?</title><link href="http://localhost:4000/blog/2019/10/05/attract-mode-with-bat-files" rel="alternate" type="text/html" title="attract mode with bat files?" /><published>2019-10-05T10:34:47-04:00</published><updated>2019-10-05T10:34:47-04:00</updated><id>http://localhost:4000/blog/2019/10/05/attract-mode-with-bat-files</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/attract-mode-with-bat-files">&lt;p&gt;still trying to figure out how to make attract mode load executables instead of MAME cause I want it as a generic launcher&lt;/p&gt;
+
+&lt;p&gt;if i do figure out i will try to remember to edit this&lt;/p&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">still trying to figure out how to make attract mode load executables instead of MAME cause I want it as a generic launcher</summary></entry><entry><title type="html">extracting 3DS music into soundfonts and MIDI</title><link href="http://localhost:4000/blog/2019/10/05/extracting-3ds-music-into-soundfonts-and-midi" rel="alternate" type="text/html" title="extracting 3DS music into soundfonts and MIDI" /><published>2019-10-05T10:09:24-04:00</published><updated>2019-10-05T10:09:24-04:00</updated><id>http://localhost:4000/blog/2019/10/05/extracting-3ds-music-into-soundfonts-and-midi</id><content type="html" xml:base="http://localhost:4000/blog/2019/10/05/extracting-3ds-music-into-soundfonts-and-midi">&lt;p&gt;here’s a text file on my PC:&lt;/p&gt;
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;use ninfs
+
+depending on Windows or Linux respectively
+py -3 -m ninfs gui
+python3 -m ninfs gui
+
+if on SD card, drag Nintendo 3DS folder in with movable.sed (found in NAND or in backups or whatever I have it)
+then mount and get your app files
+
+then put app files in ninfs and extract romfs and get bcsar files
+
+edit 11/05/2019: for cia you can use
+ctrtool --contents=contents game.cia
+ctrtool --exheader=exheader.bin --exefsdir=exefs --romfsdir=romfs --logo=logo.bcma.lz --plainrgn=plain.bin &amp;lt;contents.0000.xxxxxxxx&amp;gt;
+
+then go to BCSAR_ExtractTools (found on github), extract bcsar and then convert all bcwav to wav (i used audacity fork by jackoalan, hopefully there's a better way)
+edit 11/09/2019: do not use audacity fork, use foobar2000 with the vgmstream plugin as it will export the loops properly when converting everything at once (add all songs to a playlist, select all and convert to WAV)
+
+convert bcseq to MIDI and run sf2comp with text file in root of extracttools also the wav files as well
+
+mess with soundfont using polyphone (or viena i guess?) if you need to but it should work
+
+and that should be it
+
+also note: VGMTrans (VGMTrans_WTL.exe) is way better but does not support BCSAR, it does support BRSAR on the Wii and you can export MID and SF2 way more easily&lt;/code&gt;&lt;/pre&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">here’s a text file on my PC:</summary></entry><entry><title type="html">http://ayato.sub.jp/</title><link href="http://localhost:4000/blog/2019/08/31/http-ayato-sub-jp" rel="alternate" type="text/html" title="http://ayato.sub.jp/" /><published>2019-08-31T10:01:19-04:00</published><updated>2019-08-31T10:01:19-04:00</updated><id>http://localhost:4000/blog/2019/08/31/http-ayato-sub-jp</id><content type="html" xml:base="http://localhost:4000/blog/2019/08/31/http-ayato-sub-jp">&lt;p&gt;Today I archived the MIDI files from &lt;a href=&quot;http://ayato.sub.jp/&quot;&gt;http://ayato.sub.jp/&lt;/a&gt; onto the Internet Archive, because no one did it yet, apparently. Most of the MUS, PDF and MUSX files are still not on there, so if someone could do those that would be great. The site is a bunch of scores of songs from mostly BEMANI rhythm games and some Touhou songs, and they’re done really well.&lt;/p&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">Today I archived the MIDI files from http://ayato.sub.jp/ onto the Internet Archive, because no one did it yet, apparently. Most of the MUS, PDF and MUSX files are still not on there, so if someone could do those that would be great. The site is a bunch of scores of songs from mostly BEMANI rhythm games and some Touhou songs, and they’re done really well.</summary></entry><entry><title type="html">Welcome</title><link href="http://localhost:4000/blog/2019/08/31/welcome" rel="alternate" type="text/html" title="Welcome" /><published>2019-08-31T09:16:40-04:00</published><updated>2019-08-31T09:16:40-04:00</updated><id>http://localhost:4000/blog/2019/08/31/welcome</id><content type="html" xml:base="http://localhost:4000/blog/2019/08/31/welcome">&lt;p&gt;I’m just making this blog so that if I figure something out or I know something that people might want to hear (mostly on technology and stuff), I can share it so it’s not lost to time. Feel free to archive whatever I post.&lt;/p&gt;</content><author><name>sukimayou</name></author><category term="Uncategorized" /><summary type="html">I’m just making this blog so that if I figure something out or I know something that people might want to hear (mostly on technology and stuff), I can share it so it’s not lost to time. Feel free to archive whatever I post.</summary></entry></feed>
